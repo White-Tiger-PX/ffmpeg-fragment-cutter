@@ -34,7 +34,7 @@ python ffmpeg_fragment_cutter.py
 5. The program will list all available audio tracks and subtitles from the video. You can select which ones to save.
 
 - For audio: Enter the indices of the audio tracks you want to save (Example: 0 1 2) or skip.
-- For subtitles: Enter the indices of the audio tracks you want to save (Example: 0 1 2) or skip.
+- For subtitles: Enter the subtitle indexes that you want to save (Example: 0 1 2) or skip.
 
 6. The program will create a new file with the selected time range and selected streams.
 
