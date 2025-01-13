@@ -4,6 +4,15 @@ import subprocess
 
 
 def time_to_milliseconds(time_str):
+    """
+    Converts a time string in the format hh:mm:ss.mmm to milliseconds.
+
+    Args:
+        time_str (str): A time string, formatted as hh:mm:ss.mmm.
+
+    Returns:
+        int: The total time in milliseconds.
+    """
     hours, minutes, seconds, milliseconds = [int(el) for el in time_str]
     total_milliseconds = (((hours * 60 + minutes) * 60) + seconds) * 1000 + milliseconds
 
@@ -11,6 +20,15 @@ def time_to_milliseconds(time_str):
 
 
 def milliseconds_to_ffmpeg_format(milliseconds):
+    """
+    Converts milliseconds to the FFmpeg time format (hh:mm:ss.mmm).
+
+    Args:
+        milliseconds (int): Time in milliseconds.
+
+    Returns:
+        str: Time in FFmpeg format (hh:mm:ss.mmm).
+    """
     seconds, ms = divmod(milliseconds, 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
@@ -19,6 +37,15 @@ def milliseconds_to_ffmpeg_format(milliseconds):
 
 
 def get_stream_info(input_path):
+    """
+    Retrieves stream information from the media file using ffprobe.
+
+    Args:
+        input_path (str): Path to the media file.
+
+    Returns:
+        dict: A dictionary containing stream information (video, audio, subtitles).
+    """
     cmd = [
         'ffprobe',
         '-v', 'error',
@@ -33,13 +60,22 @@ def get_stream_info(input_path):
         streams_info = json.loads(result.stdout)
 
         return streams_info
-    except subprocess.CalledProcessError as e:
-        print(f"Error running ffprobe: {e}")
+    except subprocess.CalledProcessError as err:
+        print(f"Error running ffprobe: {err}")
 
         return {}
 
 
 def get_duration(input_path):
+    """
+    Retrieves the duration of the media file using ffprobe.
+
+    Args:
+        input_path (str): Path to the media file.
+
+    Returns:
+        str: Duration of the media file in the format hh:mm:ss.mmm.
+    """
     cmd = [
         'ffprobe',
         '-v', 'error',
@@ -56,13 +92,21 @@ def get_duration(input_path):
         milliseconds = (seconds - int(seconds)) * 1000
 
         return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}.{int(milliseconds):03}"
-    except subprocess.CalledProcessError as e:
-        print(f"Error running ffprobe: {e}")
+    except subprocess.CalledProcessError as err:
+        print(f"Error running ffprobe: {err}")
 
         return "00:00:00.000"
 
 
 def split_video(input_path, start_time, end_time=None):
+    """
+    Splits the video file into a new file from the specified start time to end time.
+
+    Args:
+        input_path (str): Path to the media file.
+        start_time (list): The start time as a list [hours, minutes, seconds, milliseconds].
+        end_time (list, optional): The end time as a list [hours, minutes, seconds, milliseconds]. Defaults to None, meaning the whole video from start_time.
+    """
     folder, filename = os.path.split(input_path)
     name, ext = os.path.splitext(filename)
 
@@ -130,6 +174,15 @@ def split_video(input_path, start_time, end_time=None):
 
 
 def get_time_input(prompt):
+    """
+    Prompts the user for a time input in the format hh:mm:ss.mmm.
+
+    Args:
+        prompt (str): The message to display to the user.
+
+    Returns:
+        list: A list of time components [hours, minutes, seconds, milliseconds].
+    """
     while True:
         time_str = input(f"{prompt}: ").strip()
 
@@ -166,6 +219,10 @@ def get_time_input(prompt):
 
 
 def main():
+    """
+    The main function that handles user input, retrieves video duration,
+    and splits the video based on user-provided time intervals.
+    """
     print("Examples of valid time input:")
     print("75 —> 75 seconds")
     print("12.100 —> 12 seconds, 100 milliseconds")
